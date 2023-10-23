@@ -147,15 +147,43 @@ public class FareCalculatorServiceTest {
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis());//less than 30 minutes parking should be free
         Date outTime = new Date();
-        outTime.setTime(System.currentTimeMillis() + (MILLIS_PER_HOUR/3)); // testing for 20 minutes
+        outTime.setTime(System.currentTimeMillis() + (MILLIS_PER_HOUR/3));// testing for 20 minutes
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
-        fareCalculatorService.calculateFare(ticket);
+        fareCalculatorService.calculateFare(ticket, true);
         assertEquals( (0) , ticket.getPrice());
+    }
+    @Test
+    public void calculateFareCarWithDiscount() {
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis());
+        Date outTime = new Date();
+        outTime.setTime(System.currentTimeMillis() + (MILLIS_PER_HOUR));// testing for 60 minutes
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket, true);
+        assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR*0.95);
+    }
+
+    @Test
+    public void calculateFareBikeWithDiscount() {
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis());
+        Date outTime = new Date();
+        outTime.setTime(System.currentTimeMillis() + (MILLIS_PER_HOUR));// testing for 60 minutes
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket, true);
+        assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR*0.95);
     }
 
 }
