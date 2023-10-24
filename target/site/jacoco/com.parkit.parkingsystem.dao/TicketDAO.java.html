@@ -86,5 +86,29 @@ import java.sql.Timestamp;
         }
 <span class="nc" id="L87">        return false;</span>
     }
+
+    public int getNbTicket(String vehicleRegNumber) {
+<span class="nc" id="L91">        Connection con = null;</span>
+<span class="nc" id="L92">        int nbTicket = 0;</span>
+        try {
+<span class="nc" id="L94">            con = dataBaseConfig.getConnection();</span>
+<span class="nc" id="L95">            PreparedStatement ps = con.prepareStatement(DBConstants.GET_NB_TICKET);</span>
+<span class="nc" id="L96">            ps.setString(1, vehicleRegNumber);</span>
+<span class="nc" id="L97">            ResultSet rs = ps.executeQuery();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L99">                nbTicket = rs.getInt(1);</span>
+            }
+<span class="nc" id="L101">            dataBaseConfig.closeResultSet(rs);</span>
+<span class="nc" id="L102">            dataBaseConfig.closePreparedStatement(ps);</span>
+
+<span class="nc" id="L104">        } catch (Exception ex){</span>
+<span class="nc" id="L105">        logger.error(&quot;Error getting number of tickets&quot;,ex);</span>
+
+    }finally {
+<span class="nc" id="L108">        dataBaseConfig.closeConnection(con);</span>
+    }
+<span class="nc" id="L110">        return nbTicket;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

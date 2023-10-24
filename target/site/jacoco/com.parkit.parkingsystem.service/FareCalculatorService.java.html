@@ -3,32 +3,55 @@
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
-<span class="fc" id="L6">public class FareCalculatorService {</span>
+import static com.parkit.parkingsystem.constants.ParkingType.BIKE;
+
+<span class="fc" id="L8">public class FareCalculatorService {</span>
 
     private static final int MILLIS_PER_HOUR = 3600000;
 
-    public void calculateFare(Ticket ticket){
-<span class="pc bpc" id="L11" title="1 of 4 branches missed.">        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){</span>
-<span class="fc" id="L12">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
+    public void calculateFare(Ticket ticket) {
+<span class="fc" id="L13">        calculateFare(ticket, false); // Default to no discount</span>
+<span class="fc" id="L14">    }</span>
+
+    public void calculateFare(Ticket ticket, boolean discount) {
+<span class="pc bpc" id="L17" title="1 of 4 branches missed.">        if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {</span>
+<span class="fc" id="L18">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot; + ticket.getOutTime().toString());</span>
         }
 
-<span class="fc" id="L15">        int inTime = (int) ticket.getInTime().getTime();</span>
-<span class="fc" id="L16">        int outTime = (int) ticket.getOutTime().getTime();</span>
-<span class="fc" id="L17">        int durationMillis = outTime - inTime;</span>
+<span class="fc" id="L21">        int inTime = (int) ticket.getInTime().getTime();</span>
+<span class="fc" id="L22">        int outTime = (int) ticket.getOutTime().getTime();</span>
+<span class="fc" id="L23">        int durationMillis = outTime - inTime;</span>
 
-<span class="fc" id="L19">        double duration = (double)durationMillis / MILLIS_PER_HOUR;</span>
+<span class="fc" id="L25">        float duration = (float) durationMillis / MILLIS_PER_HOUR;</span>
 
-<span class="pc bpc" id="L21" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()){</span>
+<span class="pc bpc" id="L27" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()) {</span>
             case CAR: {
-<span class="fc" id="L23">                ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);</span>
-<span class="fc" id="L24">                break;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">                if (duration &lt; 0.5) {</span>
+<span class="fc" id="L30">                    ticket.setPrice(0);</span>
+                } else {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                    if (discount) {</span>
+<span class="fc" id="L33">                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * 0.95);</span>
+                    } else {
+<span class="fc" id="L35">                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);</span>
+                    }
+<span class="fc" id="L37">                    break;</span>
+                }
             }
+
             case BIKE: {
-<span class="fc" id="L27">                ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);</span>
-<span class="fc" id="L28">                break;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                if (duration &lt; 0.5) {</span>
+<span class="fc" id="L43">                    ticket.setPrice(0);</span>
+                } else {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                    if (discount) {</span>
+<span class="fc" id="L46">                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * 0.95);</span>
+                    } else {
+<span class="fc" id="L48">                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);</span>
+                    }
+                    break;
+                }
+
             }
-<span class="nc" id="L30">            default: throw new IllegalArgumentException(&quot;Unknown Parking Type&quot;);</span>
         }
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L55">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
