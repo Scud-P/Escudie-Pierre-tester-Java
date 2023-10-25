@@ -110,7 +110,22 @@ public class ParkingServiceTest {
 
     }
 
-    
+    @Test
+    public void testGetNextParkingNumberIfAvailableParkingNumberNotFound() {
 
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
+        ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
+
+        assertNull(spot);
+    }
+
+    @Test
+    public void testGetNextParkingNumberIfAvailableParkingNumberWrongArgument() {
+
+        when(inputReaderUtil.readSelection()).thenReturn(3);
+        ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
+        assertNull(spot);
+    }
 
 }
