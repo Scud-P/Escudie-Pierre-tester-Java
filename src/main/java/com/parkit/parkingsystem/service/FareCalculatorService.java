@@ -7,7 +7,7 @@ import static com.parkit.parkingsystem.constants.ParkingType.BIKE;
 
 public class FareCalculatorService {
 
-    private static final int MILLIS_PER_HOUR = 3600000;
+    private static final int MILLIS_PER_MINUTE = 60000;
 
     public void calculateFare(Ticket ticket) {
         calculateFare(ticket, false); // Default to no discount
@@ -21,31 +21,33 @@ public class FareCalculatorService {
         int inTime = (int) ticket.getInTime().getTime();
         int outTime = (int) ticket.getOutTime().getTime();
         int durationMillis = outTime - inTime;
+        int duration = durationMillis / MILLIS_PER_MINUTE;
 
-        float duration = (float) durationMillis / MILLIS_PER_HOUR;
+        float freeDuration = 30;
 
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
-                if (duration < 0.5) {
+                if (duration <= freeDuration) {
                     ticket.setPrice(0);
                 } else {
                     if (discount) {
-                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * 0.95);
+                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR * 0.95 / 60));
                     } else {
-                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR  / 60));
                     }
                     break;
                 }
             }
 
             case BIKE: {
-                if (duration < 0.5) {
+                if (duration <= freeDuration) {
                     ticket.setPrice(0);
                 } else {
                     if (discount) {
-                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * 0.95);
+                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR * 0.95 / 60));
+
                     } else {
-                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR / 60));
                     }
                     break;
                 }

@@ -1,5 +1,8 @@
 package com.parkit.parkingsystem.model;
 
+import com.parkit.parkingsystem.constants.Fare;
+
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,8 +42,10 @@ public class Ticket {
         return price;
     }
 
+    // Setter to avoid getting more than 2 decimals
     public void setPrice(double price) {
-        this.price = price;
+        double roundedPrice = Math.round(price*100);
+        this.price = roundedPrice/100;
     }
 
     public Date getInTime() {
