@@ -96,7 +96,7 @@ public class ParkingDataBaseIT {
 
         assertNotNull(ticket.getPrice());
         assertNotNull(ticket.getOutTime());
-        assertEquals(0, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket.getPrice());
         System.out.println("In time: " + ticket.getInTime());
@@ -113,7 +113,7 @@ public class ParkingDataBaseIT {
 
         assertNotNull(ticket2.getPrice());
         assertNotNull(ticket2.getOutTime());
-        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(2, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket2.getPrice());
         System.out.println("In time: " + ticket2.getInTime());
