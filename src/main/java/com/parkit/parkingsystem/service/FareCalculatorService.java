@@ -23,7 +23,7 @@ public class FareCalculatorService {
         int durationMillis = outTime - inTime;
         int duration = durationMillis / MILLIS_PER_MINUTE;
 
-        float freeDuration = 30;
+        int freeDuration = 30;
 
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {

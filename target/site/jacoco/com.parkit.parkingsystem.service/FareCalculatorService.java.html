@@ -7,7 +7,7 @@ import static com.parkit.parkingsystem.constants.ParkingType.BIKE;
 
 <span class="fc" id="L8">public class FareCalculatorService {</span>
 
-    private static final int MILLIS_PER_HOUR = 3600000;
+    private static final int MILLIS_PER_MINUTE = 60000;
 
     public void calculateFare(Ticket ticket) {
 <span class="fc" id="L13">        calculateFare(ticket, false); // Default to no discount</span>
@@ -21,37 +21,39 @@ import static com.parkit.parkingsystem.constants.ParkingType.BIKE;
 <span class="fc" id="L21">        int inTime = (int) ticket.getInTime().getTime();</span>
 <span class="fc" id="L22">        int outTime = (int) ticket.getOutTime().getTime();</span>
 <span class="fc" id="L23">        int durationMillis = outTime - inTime;</span>
+<span class="fc" id="L24">        int duration = durationMillis / MILLIS_PER_MINUTE;</span>
 
-<span class="fc" id="L25">        float duration = (float) durationMillis / MILLIS_PER_HOUR;</span>
+<span class="fc" id="L26">        float freeDuration = 30;</span>
 
-<span class="pc bpc" id="L27" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()) {</span>
+<span class="pc bpc" id="L28" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()) {</span>
             case CAR: {
-<span class="fc bfc" id="L29" title="All 2 branches covered.">                if (duration &lt; 0.5) {</span>
-<span class="fc" id="L30">                    ticket.setPrice(0);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                if (duration &lt;= freeDuration) {</span>
+<span class="fc" id="L31">                    ticket.setPrice(0);</span>
                 } else {
-<span class="fc bfc" id="L32" title="All 2 branches covered.">                    if (discount) {</span>
-<span class="fc" id="L33">                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * 0.95);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                    if (discount) {</span>
+<span class="fc" id="L34">                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR * 0.95 / 60));</span>
                     } else {
-<span class="fc" id="L35">                        ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);</span>
+<span class="fc" id="L36">                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR  / 60));</span>
                     }
-<span class="fc" id="L37">                    break;</span>
+<span class="fc" id="L38">                    break;</span>
                 }
             }
 
             case BIKE: {
-<span class="fc bfc" id="L42" title="All 2 branches covered.">                if (duration &lt; 0.5) {</span>
-<span class="fc" id="L43">                    ticket.setPrice(0);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">                if (duration &lt;= freeDuration) {</span>
+<span class="fc" id="L44">                    ticket.setPrice(0);</span>
                 } else {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">                    if (discount) {</span>
-<span class="fc" id="L46">                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR * 0.95);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">                    if (discount) {</span>
+<span class="fc" id="L47">                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR * 0.95 / 60));</span>
+
                     } else {
-<span class="fc" id="L48">                        ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);</span>
+<span class="fc" id="L50">                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR / 60));</span>
                     }
                     break;
                 }
 
             }
         }
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L57">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

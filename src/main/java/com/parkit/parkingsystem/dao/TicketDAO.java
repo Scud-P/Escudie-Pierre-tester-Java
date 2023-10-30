@@ -34,9 +34,9 @@ public class TicketDAO {
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
+            return false;
         }finally {
             dataBaseConfig.closeConnection(con);
-            return false;
         }
     }
 
@@ -63,10 +63,11 @@ public class TicketDAO {
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
+            ticket = null;
         }finally {
             dataBaseConfig.closeConnection(con);
-            return ticket;
         }
+        return ticket;
     }
 
     public boolean updateTicket(Ticket ticket) {
@@ -107,7 +108,7 @@ public class TicketDAO {
     }finally {
         dataBaseConfig.closeConnection(con);
     }
-        return nbTicket;
+        return nbTicket-1;
     }
 
 }
