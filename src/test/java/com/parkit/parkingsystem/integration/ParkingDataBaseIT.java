@@ -83,41 +83,51 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingLotExit() throws InterruptedException {
 
+        testParkingACar();
+
+        Thread.sleep(2000);
+
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-
-        parkingService.processIncomingVehicle();
-
-        Thread.sleep(1000);
 
         parkingService.processExitingVehicle();
 
+        Thread.sleep(1000);
+
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
 
+        System.out.println("ID of this ticket is: " + ticket.getId());
 
         assertNotNull(ticket.getPrice());
         assertNotNull(ticket.getOutTime());
-        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(0, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket.getPrice());
         System.out.println("In time: " + ticket.getInTime());
         System.out.println("Out time: " +ticket.getOutTime());
+
         System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
 
-        parkingService.processIncomingVehicle();
+        Thread.sleep(2000);
 
-        Thread.sleep(1000);
+        testParkingACar();
+
+        Thread.sleep(2000);
 
         parkingService.processExitingVehicle();
 
+        Thread.sleep(1000);
+
         Ticket ticket2 = ticketDAO.getTicket("ABCDEF");
+
+        System.out.println("ID of this ticket is: " + ticket2.getId());
 
         assertNotNull(ticket2.getPrice());
         assertNotNull(ticket2.getOutTime());
-        assertEquals(2, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket2.getPrice());
         System.out.println("In time: " + ticket2.getInTime());
-        System.out.println("Out time: " +ticket2.getOutTime());
+        System.out.println("Out time: " + ticket2.getOutTime());
         System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
 
 

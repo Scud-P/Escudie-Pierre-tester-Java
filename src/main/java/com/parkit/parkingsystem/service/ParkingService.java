@@ -33,7 +33,7 @@ public class ParkingService {
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehicleRegNumber();
                 parkingSpot.setAvailable(false);
-                parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
+                parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark its availability as false
 
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
@@ -46,7 +46,7 @@ public class ParkingService {
                 ticket.setOutTime(null);
                 ticketDAO.saveTicket(ticket);
                 int nbTicket = ticketDAO.getNbTicket(ticket.getVehicleRegNumber());
-                if(nbTicket >= 2) {
+                if(nbTicket >= 1) {
                     System.out.println("Happy to see you again! As a recurring user of our parking, you will get a 5% rebate.");
                 }
                 System.out.println("Generated Ticket and saved in DB");
@@ -108,7 +108,7 @@ public class ParkingService {
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             int nbTicket = ticketDAO.getNbTicket(ticket.getVehicleRegNumber());
-            if(nbTicket > 2) {
+            if(nbTicket > 1) {
                 fareCalculatorService.calculateFare(ticket, true);
             } else {
                 fareCalculatorService.calculateFare(ticket);
