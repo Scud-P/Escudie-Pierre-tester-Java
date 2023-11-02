@@ -108,7 +108,7 @@ public class TicketDAO {
     }finally {
         dataBaseConfig.closeConnection(con);
     }
-        return nbTicket-1;
+        return nbTicket;
     }
 
 

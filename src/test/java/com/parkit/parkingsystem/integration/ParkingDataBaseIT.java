@@ -1,6 +1,5 @@
 package com.parkit.parkingsystem.integration;
 
-import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -17,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Date;
-
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
-    private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+    private static final DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
     private static TicketDAO ticketDAO;
     private static DataBasePrepareService dataBasePrepareService;
@@ -35,7 +32,7 @@ public class ParkingDataBaseIT {
     private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
-    public static void setUp() throws Exception{
+    public static void setUp() throws Exception {
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -51,12 +48,12 @@ public class ParkingDataBaseIT {
     }
 
     @AfterAll
-    public static void tearDown(){
+    public static void tearDown() {
 
     }
 
     @Test
-    public void testParkingACar(){
+    public void testParkingACar() {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
 
@@ -85,13 +82,13 @@ public class ParkingDataBaseIT {
 
         testParkingACar();
 
-        Thread.sleep(2000);
+        Thread.sleep(3600000); // Change this for test duration
 
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
         parkingService.processExitingVehicle();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
 
@@ -99,11 +96,41 @@ public class ParkingDataBaseIT {
 
         assertNotNull(ticket.getPrice());
         assertNotNull(ticket.getOutTime());
-        assertEquals(0, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket.getPrice());
         System.out.println("In time: " + ticket.getInTime());
-        System.out.println("Out time: " +ticket.getOutTime());
+        System.out.println("Out time: " + ticket.getOutTime());
+
+        System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
+
+        //TODO: check that the fare generated and out time are populated correctly in the database
+    }
+
+    @Test
+    public void testParkingLotExitForRecurringUser() throws InterruptedException {
+
+        testParkingACar();
+
+        Thread.sleep(3600000); // Change this for test duration
+
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        parkingService.processExitingVehicle();
+
+        Thread.sleep(2000);
+
+        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+
+        System.out.println("ID of this ticket is: " + ticket.getId());
+
+        assertEquals(0.75, ticket.getPrice());
+        assertNotNull(ticket.getOutTime());
+        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
+
+        System.out.println("Fare: " + ticket.getPrice());
+        System.out.println("In time: " + ticket.getInTime());
+        System.out.println("Out time: " + ticket.getOutTime());
 
         System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
 
@@ -111,27 +138,30 @@ public class ParkingDataBaseIT {
 
         testParkingACar();
 
-        Thread.sleep(2000);
+        Thread.sleep(3600000); // Change this for test duration
 
         parkingService.processExitingVehicle();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         Ticket ticket2 = ticketDAO.getTicket("ABCDEF");
 
         System.out.println("ID of this ticket is: " + ticket2.getId());
 
-        assertNotNull(ticket2.getPrice());
+        double expectedPrice = ticket.getPrice() * 0.95;
+        double roundingExpectedPrice = Math.round(expectedPrice*100);
+        double roundedExpectedPrice = roundingExpectedPrice / 100;
+
+        assertEquals(roundedExpectedPrice, ticket2.getPrice());
         assertNotNull(ticket2.getOutTime());
-        assertEquals(1, ticketDAO.getNbTicket("ABCDEF"));
+        assertEquals(2, ticketDAO.getNbTicket("ABCDEF"));
 
         System.out.println("Fare: " + ticket2.getPrice());
         System.out.println("In time: " + ticket2.getInTime());
         System.out.println("Out time: " + ticket2.getOutTime());
+
         System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
 
-
-        //TODO: check that the fare generated and out time are populated correctly in the database
     }
 
 }

@@ -45,7 +45,8 @@ public class Ticket {
     // Setter to avoid getting more than 2 decimals
     public void setPrice(double price) {
         double roundedPrice = Math.round(price*100);
-        this.price = roundedPrice/100;
+        price = roundedPrice/100;
+        this.price = price;
     }
 
     public Date getInTime() {

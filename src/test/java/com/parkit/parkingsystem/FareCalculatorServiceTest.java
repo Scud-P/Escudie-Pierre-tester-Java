@@ -116,7 +116,7 @@ public class FareCalculatorServiceTest {
     @Test
     public void calculateFareCarWithLessThanOneHourParkingTime(){
 
-        double testDurationInHours = 1; //Set test duration here (in hours)
+        double testDurationInHours = 0.75; //Set test duration here (in hours)
         double testDuration = MILLIS_PER_HOUR * testDurationInHours;
         double payingDuration = testDurationInHours - FREE_DURATION_IN_HOURS;
 
@@ -171,7 +171,7 @@ public class FareCalculatorServiceTest {
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (0) , ticket.getPrice());
+        assertEquals((0), ticket.getPrice());
         System.out.println("calculateFareCarWithLessThan30MinutesParkingTime " + ticket.getPrice());
 
 
@@ -211,7 +211,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket, true);
 
-        float discount = 0.95F;
+        double discount = 0.95;
         double expectedPrice = payingDuration * Fare.CAR_RATE_PER_HOUR * discount;
         expectedPrice = Math.round(expectedPrice*100);
         expectedPrice = expectedPrice/100;
@@ -240,14 +240,14 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket, true);
 
-        float discount = 0.95F;
+        double discount = 0.95;
         double expectedPrice = payingDuration * Fare.BIKE_RATE_PER_HOUR * discount;
         expectedPrice = Math.round(expectedPrice*100);
         expectedPrice = expectedPrice/100;
 
         assertEquals(expectedPrice, ticket.getPrice());
 
-        System.out.println("calculateFareCarWithDiscount " + ticket.getPrice());
+        System.out.println("calculateFareBikeWithDiscount " + ticket.getPrice());
 
     }
 

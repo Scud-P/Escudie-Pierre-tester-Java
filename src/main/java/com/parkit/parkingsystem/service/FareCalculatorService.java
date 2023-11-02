@@ -3,8 +3,6 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
-import static com.parkit.parkingsystem.constants.ParkingType.BIKE;
-
 public class FareCalculatorService {
 
     private static final int MILLIS_PER_MINUTE = 60000;
@@ -18,10 +16,10 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
 
-        int inTime = (int) ticket.getInTime().getTime();
-        int outTime = (int) ticket.getOutTime().getTime();
-        int durationMillis = outTime - inTime;
-        int duration = durationMillis / MILLIS_PER_MINUTE;
+        double inTime = ticket.getInTime().getTime();
+        double outTime = ticket.getOutTime().getTime();
+        double durationMillis = outTime - inTime;
+        double duration = durationMillis / MILLIS_PER_MINUTE;
 
         int freeDuration = 30;
 
@@ -30,10 +28,14 @@ public class FareCalculatorService {
                 if (duration <= freeDuration) {
                     ticket.setPrice(0);
                 } else {
+                    double farePerMin = Fare.CAR_RATE_PER_HOUR / 60;
+                    double payingDuration = duration - freeDuration;
+                    double fare = payingDuration * farePerMin;
                     if (discount) {
-                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR * 0.95 / 60));
+                        double discountedFare = fare * 95 / 100;
+                        ticket.setPrice(discountedFare);
                     } else {
-                        ticket.setPrice((duration - freeDuration) * (Fare.CAR_RATE_PER_HOUR  / 60));
+                        ticket.setPrice(fare);
                     }
                     break;
                 }
@@ -43,15 +45,17 @@ public class FareCalculatorService {
                 if (duration <= freeDuration) {
                     ticket.setPrice(0);
                 } else {
+                    double farePerMin = Fare.BIKE_RATE_PER_HOUR / 60;
+                    double payingDuration = duration - freeDuration;
+                    double fare = payingDuration * farePerMin;
                     if (discount) {
-                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR * 0.95 / 60));
-
+                        double discountedFare = fare * 95 / 100;
+                        ticket.setPrice(discountedFare);
                     } else {
-                        ticket.setPrice((duration - freeDuration) * (Fare.BIKE_RATE_PER_HOUR / 60));
+                        ticket.setPrice(fare);
                     }
                     break;
                 }
-
             }
         }
     }
