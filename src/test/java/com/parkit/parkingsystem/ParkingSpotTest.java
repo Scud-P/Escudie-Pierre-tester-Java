@@ -17,19 +17,19 @@ public class ParkingSpotTest {
     @Test
     public void testEquals_NullObject() {
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
-        assertNotEquals(null, parkingSpot);
+        assertNotNull(parkingSpot);
     }
 
     @Test
     public void testEquals_DifferentClass() {
-        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
-        assertNotEquals("Not a ParkingSpot", parkingSpot);
+        ParkingSpot parkingSpotCar = new ParkingSpot(1, ParkingType.CAR, true);
+        assertNotEquals("Not a ParkingSpot", parkingSpotCar);
     }
 
     @Test
-    public void testEquals_SameAttributes() {
+    public void testEquals_SameAttributes_DifferentAvailability() {
         ParkingSpot parkingSpot1 = new ParkingSpot(1, ParkingType.CAR, true);
-        ParkingSpot parkingSpot2 = new ParkingSpot(1, ParkingType.CAR, false); // Different Availability
+        ParkingSpot parkingSpot2 = new ParkingSpot(1, ParkingType.CAR, false);
         assertEquals(parkingSpot1, parkingSpot2);
     }
 

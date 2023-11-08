@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -34,8 +33,6 @@ public class ParkingServiceTest {
     private static ParkingSpotDAO parkingSpotDAO;
     @Mock
     private static TicketDAO ticketDAO;
-    @Mock
-    private Logger logger;
 
     @BeforeEach
     public void setUpPerTest() {
@@ -50,7 +47,6 @@ public class ParkingServiceTest {
 
     @Test
     public void processExitingVehicleTest()  {
-
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
         Ticket ticket = new Ticket();
         ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
@@ -76,7 +72,6 @@ public class ParkingServiceTest {
 
     @Test
     public void processIncomingCarTest()  {
-
         when(inputReaderUtil.readSelection()).thenReturn(1);
 
         try {
@@ -96,7 +91,6 @@ public class ParkingServiceTest {
 
     @Test
     public void processIncomingBikeTest()  {
-
         when(inputReaderUtil.readSelection()).thenReturn(2);
 
         try {
@@ -115,7 +109,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestRecurringUser() {
+    public void processIncomingVehicle_shouldDisplayRecurringUserMessage_whenMoreThan1TicketForThePlateNumber_IsInDB() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
 
         try {
@@ -123,26 +117,19 @@ public class ParkingServiceTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
         when(ticketDAO.getNbTicket(anyString())).thenReturn(2);
 
-        // Redirect System.out for capturing output
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-
-        // Create a new ParkingService for testing
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
-        // Run the method to test
         parkingService.processIncomingVehicle();
 
-        // Restore the standard System.out
         System.setOut(System.out);
-
-        // Capture the printed output
         String printedOutput = outputStream.toString().trim();
 
-        // Verify that the expected message is printed
         assertTrue(printedOutput.contains("Happy to see you again! As a recurring user of our parking, you will get a 5% rebate."));
     }
 
@@ -169,7 +156,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void testGetNextParkingNumberIfAvailable() {
+    public void getNextParkingNumberIfAvailable_shouldReturnAnAvailableSpot_whenAnAdequateSpotIsAvailable() {
 
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
@@ -183,8 +170,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void testGetNextParkingNumberIfAvailableParkingNumberNotFound() {
-
+    public void getNextNextParkingNumberIfAvailable_ShouldReturnANullSpot_whenParkingNumberNoAdequateSpotIsFound() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
         ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
@@ -195,23 +181,20 @@ public class ParkingServiceTest {
 
     @Test
     public void whenIncorrectInputIsProvided_getNextParkingIfAvailable_shouldCatchIllegalArgumentException_andLogTheProperError() {
-
         when(inputReaderUtil.readSelection()).thenReturn(3);
         ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
+
         assertNull(spot);
     }
 
     @Test
-
-    public void whenIncorrectInputIsProvided_getVehicleType_shouldThrow_IllegalArgumentException() {
+    public void getVehicleType_shouldThrow_IllegalArgumentException_whenIncorrectInputIsProvided() {
         IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-
             when(inputReaderUtil.readSelection()).thenReturn(3);
             parkingService.getVehicleType();
-
         });
+
         Assertions.assertEquals("Entered input is invalid", thrown.getMessage());
     }
-
 }
 

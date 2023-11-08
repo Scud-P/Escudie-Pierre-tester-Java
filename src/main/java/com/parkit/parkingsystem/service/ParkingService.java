@@ -17,9 +17,9 @@ public class ParkingService {
 
     private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
 
-    private InputReaderUtil inputReaderUtil;
-    private ParkingSpotDAO parkingSpotDAO;
-    private  TicketDAO ticketDAO;
+    private final InputReaderUtil inputReaderUtil;
+    private final ParkingSpotDAO parkingSpotDAO;
+    private final TicketDAO ticketDAO;
 
     public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
         this.inputReaderUtil = inputReaderUtil;
@@ -124,5 +124,9 @@ public class ParkingService {
         }catch(Exception e){
             logger.error("Unable to process exiting vehicle",e);
         }
+    }
+
+    public void setFareCalculatorService(FareCalculatorService fareCalculatorService) {
+        ParkingService.fareCalculatorService = fareCalculatorService;
     }
 }

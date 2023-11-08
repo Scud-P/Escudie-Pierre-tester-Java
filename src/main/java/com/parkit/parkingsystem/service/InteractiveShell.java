@@ -8,6 +8,12 @@ import org.apache.logging.log4j.Logger;
 
 public class InteractiveShell {
 
+//    private static boolean testingMode = false; // Add a flag for testing.
+//
+//    public static void setTestingMode(boolean testing) {
+//        testingMode = testing;
+//    }
+
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
 
     public static void loadInterface(){
@@ -25,10 +31,12 @@ public class InteractiveShell {
             int option = inputReaderUtil.readSelection();
             switch(option){
                 case 1: {
+                    System.out.println("Processing incoming vehicle");
                     parkingService.processIncomingVehicle();
                     break;
                 }
                 case 2: {
+                    System.out.println("Processing exiting vehicle");
                     parkingService.processExitingVehicle();
                     break;
                 }
@@ -39,6 +47,9 @@ public class InteractiveShell {
                 }
                 default: System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }
+//            if (testingMode) {
+//                continueApp = false;
+//            }
         }
     }
 
