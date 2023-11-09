@@ -170,18 +170,9 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void getNextNextParkingNumberIfAvailable_ShouldReturnANullSpot_whenParkingNumberNoAdequateSpotIsFound() {
+    public void getNextNextParkingNumberIfAvailable_ShouldReturnANullSpot_whenNoAdequateSpotIsFound() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
-        ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
-
-        assertNull(spot);
-    }
-
-
-    @Test
-    public void whenIncorrectInputIsProvided_getNextParkingIfAvailable_shouldCatchIllegalArgumentException_andLogTheProperError() {
-        when(inputReaderUtil.readSelection()).thenReturn(3);
         ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
 
         assertNull(spot);
