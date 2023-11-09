@@ -66,9 +66,6 @@ public class ParkingDataBaseIT {
 
         assertNotNull(ticket.getPrice());
         assertNotNull(ticket.getOutTime());
-
-
-        //TODO: check that the fare generated and out time are populated correctly in the database
     }
 
     @Test
@@ -85,12 +82,6 @@ public class ParkingDataBaseIT {
         assertNotNull(spot);
         assertFalse(spot.isAvailable());
         assertTrue(nextSpot.isAvailable());
-
-//        Debug prints
-//        System.out.println("Attributed spot availability: " + spot.isAvailable());
-//        System.out.println("attributed spot id: " + spot.getId());
-//        System.out.println("Next spot availability: " + nextSpot.isAvailable());
-//        System.out.println("next spot id: " + nextSpot.getId());
     }
 
     @Test
@@ -114,7 +105,7 @@ public class ParkingDataBaseIT {
         Thread.sleep(1000);
 
         testParkingACar();
-        Thread.sleep(1000); // Change this for test duration
+        Thread.sleep(1000);
 
         parkingService.processExitingVehicle();
         Thread.sleep(1000);
@@ -123,12 +114,5 @@ public class ParkingDataBaseIT {
         assertNotNull(ticket2.getOutTime());
         assertEquals(2, ticketDAO.getNbTicket("ABCDEF"));
         verify(fareCalculatorService).calculateFare(any(Ticket.class), eq(true));
-
-        System.out.println("Fare: " + ticket2.getPrice());
-        System.out.println("In time: " + ticket2.getInTime());
-        System.out.println("Out time: " + ticket2.getOutTime());
-
-        System.out.println("Number of tickets in db" + ticketDAO.getNbTicket("ABCDEF"));
     }
-
 }
